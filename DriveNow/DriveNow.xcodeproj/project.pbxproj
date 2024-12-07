@@ -6,8 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		28116B662D049EE9000E3439 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 28116B0A2D0482AD000E3439 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 28116B112D0482AD000E3439;
+			remoteInfo = DriveNow;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		28116B122D0482AD000E3439 /* DriveNow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DriveNow.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		28116B622D049EE9000E3439 /* DriveNowTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DriveNowTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -29,10 +40,22 @@
 			path = DriveNow;
 			sourceTree = "<group>";
 		};
+		28116B632D049EE9000E3439 /* DriveNowTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = DriveNowTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		28116B0F2D0482AD000E3439 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		28116B5F2D049EE9000E3439 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -46,6 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				28116B142D0482AD000E3439 /* DriveNow */,
+				28116B632D049EE9000E3439 /* DriveNowTests */,
 				28116B132D0482AD000E3439 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,6 +78,7 @@
 			isa = PBXGroup;
 			children = (
 				28116B122D0482AD000E3439 /* DriveNow.app */,
+				28116B622D049EE9000E3439 /* DriveNowTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -83,6 +108,29 @@
 			productReference = 28116B122D0482AD000E3439 /* DriveNow.app */;
 			productType = "com.apple.product-type.application";
 		};
+		28116B612D049EE9000E3439 /* DriveNowTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 28116B682D049EE9000E3439 /* Build configuration list for PBXNativeTarget "DriveNowTests" */;
+			buildPhases = (
+				28116B5E2D049EE9000E3439 /* Sources */,
+				28116B5F2D049EE9000E3439 /* Frameworks */,
+				28116B602D049EE9000E3439 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				28116B672D049EE9000E3439 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				28116B632D049EE9000E3439 /* DriveNowTests */,
+			);
+			name = DriveNowTests;
+			packageProductDependencies = (
+			);
+			productName = DriveNowTests;
+			productReference = 28116B622D049EE9000E3439 /* DriveNowTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -95,6 +143,10 @@
 				TargetAttributes = {
 					28116B112D0482AD000E3439 = {
 						CreatedOnToolsVersion = 16.1;
+					};
+					28116B612D049EE9000E3439 = {
+						CreatedOnToolsVersion = 16.1;
+						TestTargetID = 28116B112D0482AD000E3439;
 					};
 				};
 			};
@@ -113,12 +165,20 @@
 			projectRoot = "";
 			targets = (
 				28116B112D0482AD000E3439 /* DriveNow */,
+				28116B612D049EE9000E3439 /* DriveNowTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		28116B102D0482AD000E3439 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		28116B602D049EE9000E3439 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -135,7 +195,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		28116B5E2D049EE9000E3439 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		28116B672D049EE9000E3439 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 28116B112D0482AD000E3439 /* DriveNow */;
+			targetProxy = 28116B662D049EE9000E3439 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		28116B262D0482AF000E3439 /* Debug */ = {
@@ -313,6 +388,42 @@
 			};
 			name = Release;
 		};
+		28116B692D049EE9000E3439 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = SVGXRR5RRA;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Eduardo.DriveNowTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DriveNow.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DriveNow";
+			};
+			name = Debug;
+		};
+		28116B6A2D049EE9000E3439 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = SVGXRR5RRA;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Eduardo.DriveNowTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DriveNow.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DriveNow";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -330,6 +441,15 @@
 			buildConfigurations = (
 				28116B262D0482AF000E3439 /* Debug */,
 				28116B272D0482AF000E3439 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		28116B682D049EE9000E3439 /* Build configuration list for PBXNativeTarget "DriveNowTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				28116B692D049EE9000E3439 /* Debug */,
+				28116B6A2D049EE9000E3439 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
