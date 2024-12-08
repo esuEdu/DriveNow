@@ -24,4 +24,16 @@ enum Endpoints {
                 return URL(string: "\(Endpoints.baseURL)/ride/\(customerId)?driver_id=\(driverId)")!
         }
     }
+    
+    var method: String {
+        switch self {
+            case .postRideEstimate:
+                return "POST"
+            case .patchRideConfirm:
+                return "PATCH"
+            case .getRide:
+                return "GET"
+                
+        }
+    }
 }
