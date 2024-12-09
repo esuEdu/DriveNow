@@ -60,8 +60,8 @@ final class NetworkWorkerTest: XCTestCase {
                 "latitude": 34.0522,
                 "longitude": -118.2437
             },
-            "distance": 600.5,
-            "duration": "5 hours",
+            "distance": 600,
+            "duration": 5,
             "options": [
                 {
                     "id": 1,
@@ -98,7 +98,8 @@ final class NetworkWorkerTest: XCTestCase {
             XCTAssertEqual(result.origin.longitude, -122.4194)
             XCTAssertEqual(result.destination.latitude, 34.0522)
             XCTAssertEqual(result.destination.longitude, -118.2437)
-            XCTAssertEqual(result.distance, 600.5)
+            XCTAssertEqual(result.distance, 600)
+            XCTAssertEqual(result.duration, 5)
             XCTAssertEqual(result.options.count, 2)
             
         } catch {
