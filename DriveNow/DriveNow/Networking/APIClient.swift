@@ -19,6 +19,8 @@ class APIClient: APIClientProtocol {
         
         urlRequest.httpMethod = endpoint.method
         urlRequest.httpBody = data
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
         
         return urlRequest
     }
@@ -33,5 +35,4 @@ class APIClient: APIClientProtocol {
         
         return data
     }
-    
 }
