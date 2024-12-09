@@ -10,8 +10,8 @@ import Foundation
 struct RideEstimateModel: Codable {
     let origin: Coordinates
     let destination: Coordinates
-    let distance: Double
-    let duration: String
+    let distance: Int
+    let duration: Int
     let options: [TravelOption]
 }
 
