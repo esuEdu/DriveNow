@@ -13,6 +13,7 @@ struct RideEstimateModel: Codable {
     let distance: Int
     let duration: Int
     let options: [TravelOption]
+    let routeResponse: AnyValue
 }
 
 struct Coordinates: Codable {

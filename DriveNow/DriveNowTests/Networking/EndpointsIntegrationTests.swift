@@ -34,7 +34,7 @@ final class EndpointsIntegrationTests: XCTestCase {
         let rideEstimateData = encode(rideEstimate)
 
         do {
-            let data: RideEstimateModel = try await networkWorker.fetchData(from: Endpoints.postRideEstimate, data: rideEstimateData)
+            let data: RideEstimateModel = try await networkWorker.fetchData(from: Endpoints.rideEstimate, data: rideEstimateData)
             XCTAssertNotNil(data, "Expected valid response, but got nil")
         } catch {
             XCTFail("Request failed with error: \(error)")
@@ -56,7 +56,7 @@ final class EndpointsIntegrationTests: XCTestCase {
         let rideConfirmationData = encode(rideConfirmation)
         
         do {
-            let data: RideConfirmationModel = try await networkWorker.fetchData(from: Endpoints.patchRideConfirm, data: rideConfirmationData)
+            let data: RideConfirmationModel = try await networkWorker.fetchData(from: Endpoints.rideConfirm, data: rideConfirmationData)
             XCTAssertNotNil(data, "Expected valid response, but got nil")
         } catch {
             XCTFail("Request failed with error: \(error)")
@@ -66,7 +66,7 @@ final class EndpointsIntegrationTests: XCTestCase {
     func testRidesReturnData() async throws {
         
         do {
-            let data: RidesModel = try await networkWorker.fetchData(from: Endpoints.getRide(customerId: "CT01", driverId: 1))
+            let data: RidesModel = try await networkWorker.fetchData(from: Endpoints.rides(customerId: "CT01", driverId: 1))
             XCTAssertNotNil(data, "Expected valid response, but got nil")
         } catch {
             XCTFail("Request failed with error: \(error)")

@@ -52,54 +52,48 @@ final class NetworkWorkerTest: XCTestCase {
         
         let mockJSON = """
         {
-            "origin": {
-                "latitude": 37.7749,
-                "longitude": -122.4194
-            },
-            "destination": {
-                "latitude": 34.0522,
-                "longitude": -118.2437
-            },
-            "distance": 600,
-            "duration": 5,
+            "origin": { "latitude": 12.34, "longitude": 56.78 },
+            "destination": { "latitude": 98.76, "longitude": 54.32 },
+            "distance": 12345,
+            "duration": 678,
             "options": [
                 {
                     "id": 1,
-                    "name": "Economy",
-                    "description": "Affordable ride",
-                    "vehicle": "Compact Car",
-                    "review": {
-                        "rating": 4,
-                        "comment": "Comfortable and clean."
-                    },
-                    "value": 45.99
+                    "name": "Standard",
+                    "description": "A standard ride option",
+                    "vehicle": "Car",
+                    "review": { "rating": 5, "comment": "Great ride!" },
+                    "value": 25.50
                 },
                 {
                     "id": 2,
                     "name": "Premium",
-                    "description": "Luxury ride",
-                    "vehicle": "Sedan",
-                    "review": {
-                        "rating": 5,
-                        "comment": "Excellent service."
-                    },
-                    "value": 89.99
+                    "description": "A premium ride option",
+                    "vehicle": "SUV",
+                    "review": { "rating": 4, "comment": "Comfortable but expensive." },
+                    "value": 45.75
                 }
-            ]
+            ],
+            "routeResponse": {
+                "routes": [
+                    { "id": 1, "path": "route path 1" },
+                    { "id": 2, "path": "route path 2" }
+                ]
+            }
         }
         """
         mockAPIClient.mockData = mockJSON.data(using: .utf8)
         
         do {
-            let result: RideEstimateModel = try await networkWorker.fetchData(from: .postRideEstimate)
+            let result: RideEstimateModel = try await networkWorker.fetchData(from: .rideEstimate)
             
             // Assertions
-            XCTAssertEqual(result.origin.latitude, 37.7749)
-            XCTAssertEqual(result.origin.longitude, -122.4194)
-            XCTAssertEqual(result.destination.latitude, 34.0522)
-            XCTAssertEqual(result.destination.longitude, -118.2437)
-            XCTAssertEqual(result.distance, 600)
-            XCTAssertEqual(result.duration, 5)
+            XCTAssertEqual(result.origin.latitude, 12.34)
+            XCTAssertEqual(result.origin.longitude, 56.78)
+            XCTAssertEqual(result.destination.latitude, 98.76)
+            XCTAssertEqual(result.destination.longitude, 54.32)
+            XCTAssertEqual(result.distance, 12345)
+            XCTAssertEqual(result.duration, 678)
             XCTAssertEqual(result.options.count, 2)
             
         } catch {
@@ -114,7 +108,7 @@ final class NetworkWorkerTest: XCTestCase {
         mockAPIClient.mockData = invalidJSON.data(using: .utf8)
         
         do {
-            let _ : RideEstimateModel = try await networkWorker.fetchData(from: .postRideEstimate)
+            let _ : RideEstimateModel = try await networkWorker.fetchData(from: .rideEstimate)
 
             XCTFail("Expected decoding error, but succeded.")
         } catch {

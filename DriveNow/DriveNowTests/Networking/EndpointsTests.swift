@@ -12,13 +12,13 @@ final class EndpointsTests: XCTestCase {
     
     func testRideEstimateURL() {
         let expectedURL = "https://xd5zl5kk2yltomvw5fb37y3bm40vsyrx.lambda-url.sa-east-1.on.aws/ride/estimate"
-        let url = Endpoints.postRideEstimate.url
+        let url = Endpoints.rideEstimate.url
         XCTAssertEqual(url.absoluteString, expectedURL, "The postRideEstimate endpoint URL does not match the expected URL.")
     }
     
     func testRideConfirmURL() {
         let expectedURL = "https://xd5zl5kk2yltomvw5fb37y3bm40vsyrx.lambda-url.sa-east-1.on.aws/ride/confirm"
-        let url = Endpoints.patchRideConfirm.url
+        let url = Endpoints.rideConfirm.url
         
         XCTAssertEqual(url.absoluteString, expectedURL, "The patchRideConfirm endpoint URL does not match the expected URL.")
     }
@@ -28,21 +28,21 @@ final class EndpointsTests: XCTestCase {
         let driverID = 1
         
         let expectedURL = "https://xd5zl5kk2yltomvw5fb37y3bm40vsyrx.lambda-url.sa-east-1.on.aws/ride/\(cutomerID)?driver_id=\(driverID)"
-        let url = Endpoints.getRide(customerId: cutomerID, driverId: driverID).url
+        let url = Endpoints.rides(customerId: cutomerID, driverId: driverID).url
         
         XCTAssertEqual(url.absoluteString, expectedURL, "The getRide endpoint URL does not match the expected URL.")
     }
     
     func testRideEstimateMethod() {
         let expectedMethod: String = "POST"
-        let method = Endpoints.postRideEstimate.method
+        let method = Endpoints.rideEstimate.method
         
         XCTAssertEqual(method, expectedMethod, "The postRideEstimate endpoint method does not match the expected method.")
     }
     
     func testRideConfirmMethod() {
         let expectedMethod: String = "PATCH"
-        let method = Endpoints.patchRideConfirm.method
+        let method = Endpoints.rideConfirm.method
         
         XCTAssertEqual(method, expectedMethod, "The patchRideConfirm endpoint method does not match the expected method.")
     }
@@ -52,7 +52,7 @@ final class EndpointsTests: XCTestCase {
         let driverID = 1
         
         let expectedMethod: String = "GET"
-        let method = Endpoints.getRide(customerId: cutomerID, driverId: driverID).method
+        let method = Endpoints.rides(customerId: cutomerID, driverId: driverID).method
         
         XCTAssertEqual(method, expectedMethod, "The getRide endpoint method does not match the expected method.")
     }

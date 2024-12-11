@@ -10,17 +10,17 @@ import Foundation
 enum Endpoints {
     static let baseURL: String = "https://xd5zl5kk2yltomvw5fb37y3bm40vsyrx.lambda-url.sa-east-1.on.aws"
     
-    case postRideEstimate
-    case patchRideConfirm
-    case getRide(customerId: String, driverId: Int? = nil)
+    case rideEstimate
+    case rideConfirm
+    case rides(customerId: String, driverId: Int? = nil)
     
     var url: URL {
         switch self {
-        case .postRideEstimate:
+        case .rideEstimate:
             return URL(string: "\(Endpoints.baseURL)/ride/estimate")!
-        case .patchRideConfirm:
+        case .rideConfirm:
             return URL(string: "\(Endpoints.baseURL)/ride/confirm")!
-        case .getRide(let customerId, let driverId):
+        case .rides(let customerId, let driverId):
             guard let driverId else {
                 return URL(string: "\(Endpoints.baseURL)/ride/\(customerId)")!
             }
@@ -30,11 +30,11 @@ enum Endpoints {
     
     var method: String {
         switch self {
-        case .postRideEstimate:
+        case .rideEstimate:
             return "POST"
-        case .patchRideConfirm:
+        case .rideConfirm:
             return "PATCH"
-        case .getRide:
+        case .rides:
             return "GET"
             
         }
