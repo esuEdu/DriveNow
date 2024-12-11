@@ -30,7 +30,7 @@ class NetworkWorker: NetworkWorkerProtocol {
             let decodeData = try JSONDecoder().decode(T.self, from: data)
             return decodeData
             
-        } catch let error {
+        } catch {
             throw NetworkError.invalidData
         }
     }

@@ -25,7 +25,7 @@ final class EndpointsTests: XCTestCase {
     
     func testRideURL() {
         let cutomerID = "customerId"
-        let driverID = "driverId"
+        let driverID = 1
         
         let expectedURL = "https://xd5zl5kk2yltomvw5fb37y3bm40vsyrx.lambda-url.sa-east-1.on.aws/ride/\(cutomerID)?driver_id=\(driverID)"
         let url = Endpoints.getRide(customerId: cutomerID, driverId: driverID).url
@@ -49,7 +49,7 @@ final class EndpointsTests: XCTestCase {
     
     func testRifdeMethod() {
         let cutomerID = "customerId"
-        let driverID = "driverId"
+        let driverID = 1
         
         let expectedMethod: String = "GET"
         let method = Endpoints.getRide(customerId: cutomerID, driverId: driverID).method

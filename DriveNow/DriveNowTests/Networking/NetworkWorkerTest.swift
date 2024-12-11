@@ -48,7 +48,7 @@ final class NetworkWorkerTest: XCTestCase {
         super.tearDown()
     }
     
-    func testFetchData_Success() async throws {
+    func testFetchDataSuccess() async throws {
         
         let mockJSON = """
         {

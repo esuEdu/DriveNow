@@ -12,28 +12,31 @@ enum Endpoints {
     
     case postRideEstimate
     case patchRideConfirm
-    case getRide(customerId: String, driverId: String)
+    case getRide(customerId: String, driverId: Int? = nil)
     
     var url: URL {
         switch self {
-            case .postRideEstimate:
-                return URL(string: "\(Endpoints.baseURL)/ride/estimate")!
-            case .patchRideConfirm:
-                return URL(string: "\(Endpoints.baseURL)/ride/confirm")!
-            case .getRide(let customerId, let driverId):
-                return URL(string: "\(Endpoints.baseURL)/ride/\(customerId)?driver_id=\(driverId)")!
+        case .postRideEstimate:
+            return URL(string: "\(Endpoints.baseURL)/ride/estimate")!
+        case .patchRideConfirm:
+            return URL(string: "\(Endpoints.baseURL)/ride/confirm")!
+        case .getRide(let customerId, let driverId):
+            guard let driverId else {
+                return URL(string: "\(Endpoints.baseURL)/ride/\(customerId)")!
+            }
+            return URL(string: "\(Endpoints.baseURL)/ride/\(customerId)?driver_id=\(driverId)")!
         }
     }
     
     var method: String {
         switch self {
-            case .postRideEstimate:
-                return "POST"
-            case .patchRideConfirm:
-                return "PATCH"
-            case .getRide:
-                return "GET"
-                
+        case .postRideEstimate:
+            return "POST"
+        case .patchRideConfirm:
+            return "PATCH"
+        case .getRide:
+            return "GET"
+            
         }
     }
 }
