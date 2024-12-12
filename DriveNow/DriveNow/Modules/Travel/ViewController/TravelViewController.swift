@@ -24,8 +24,8 @@ class TravelViewController: UIViewController, TravelDisplayLogic {
     
     override func viewDidLoad() {
         // Create a UIHostingController with the SwiftUI View
-        let travelView = TravelView(viewModel: viewModel, onConfirm: { [weak self] customerId, origin, destination in
-            self?.handleConfirm(customerId: customerId, origin: origin, destination: destination)
+        let travelView = TravelView(viewModel: viewModel, onConfirm: {
+            self.handleConfirm()
         })
         
         self.hostingController = UIHostingController(rootView: travelView)
@@ -47,23 +47,33 @@ class TravelViewController: UIViewController, TravelDisplayLogic {
     
     
     func displayTravelEstimate(viewModel: TravelModel.ViewModel) {
-        print(viewModel)
+        
+        let rideEstimate: RideEstimateModel = .init(
+            origin: viewModel.origin,
+            destination: viewModel.destination,
+            distance: viewModel.distance,
+            duration: viewModel.duration,
+            options: viewModel.options,
+            routeResponse: viewModel.routeResponse
+        )
+        
+        Task { @MainActor in
+            self.viewModel.isLoading = false
+            router?.navigate(to: .travelOptions(rideEstimate: rideEstimate))
+        }
+
     }
     
     func displayError(error: TravelModel.Error) {
-        print(error.message)
         
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            
-            self.viewModel.isPresented = false
             
             // Instantiate the custom error overlay view
             let errorView = ErrorView(message: error.message)
             
             // Optional: If you'd like to do something after dismissal
             errorView.onClose = {
-                self.viewModel.isPresented = true
                 self.viewModel.isLoading = false
             }
             
@@ -87,9 +97,10 @@ class TravelViewController: UIViewController, TravelDisplayLogic {
     }
     
     
-    private func handleConfirm(customerId: String, origin: String, destination: String) {
+    private func handleConfirm() {
         
-        let request = TravelModel.Request(customerId: customerId, origin: origin, destination: destination)
+        let request = TravelModel.Request(customerId: viewModel.customerId, origin: viewModel.origin, destination: viewModel.destination)
+                
         Task {
             await interactor?.getRideEstimate(request: request)
         }

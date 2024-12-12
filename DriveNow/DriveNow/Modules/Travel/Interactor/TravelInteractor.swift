@@ -11,7 +11,7 @@ protocol TravelBusinessLogic {
     func getRideEstimate(request: TravelModel.Request) async
 }
 
-class TraveInteractor: TravelBusinessLogic {
+class TravelInteractor: TravelBusinessLogic {
     
     var presenter: TravelPresentaionLogic?
     var worker: NetworkWorkerProtocol

@@ -8,9 +8,7 @@
 import SwiftUI
 
 class TravelViewModel: ObservableObject {
-    @Published var isPresented: Bool = true
     @Published var isLoading: Bool = false
-    
     
     @Published var customerId: String = ""
     @Published var origin: String = ""
