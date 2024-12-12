@@ -21,20 +21,19 @@ class TraveInteractor: TravelBusinessLogic {
     }
     
     func getRideEstimate(request: TravelModel.Request) async {
-        
         let requestData = encode(request)
-        
         do {
             let data: RideEstimateModel = try await worker.fetchData(from: .rideEstimate, data: requestData)
-            
             let response: TravelModel.Response = .init(data: data)
-            
             presenter?.presentTravel(response: response)
-            
         } catch let error {
+            var message = "An unknown error occurred."
             
-            let descriptionError: TravelModel.Error = .init(message: error.localizedDescription)
+            if let netError = error as? NetworkError {
+                message = netError.errorMessage
+            }
             
+            let descriptionError: TravelModel.Error = .init(message: message)
             presenter?.presentError(error: descriptionError)
         }
     }

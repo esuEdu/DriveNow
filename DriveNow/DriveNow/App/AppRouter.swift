@@ -42,6 +42,7 @@ class AppRouter {
         let presenter = TravelPresenter()
         let interactor = TraveInteractor(worker: worker)
         
+        navigationController.isNavigationBarHidden = true
         viewController.interactor = interactor
         viewController.router = self
         presenter.viewController = viewController

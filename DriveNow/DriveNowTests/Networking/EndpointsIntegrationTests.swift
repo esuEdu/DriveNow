@@ -30,9 +30,9 @@ final class EndpointsIntegrationTests: XCTestCase {
             origin: "Av. Pres. Kenedy, 2385 - Remédios, Osasco - SP, 02675-031",
             destination: "Av. Paulista, 1538 - Bela Vista, São Paulo - SP, 01310-200"
         )
-
+        
         let rideEstimateData = encode(rideEstimate)
-
+        
         do {
             let data: RideEstimateModel = try await networkWorker.fetchData(from: Endpoints.rideEstimate, data: rideEstimateData)
             XCTAssertNotNil(data, "Expected valid response, but got nil")
