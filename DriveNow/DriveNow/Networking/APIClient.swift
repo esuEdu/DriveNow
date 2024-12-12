@@ -26,13 +26,25 @@ class APIClient: APIClientProtocol {
     }
     
     func performRequest(url: URLRequest) async throws -> Data {
-        
         let (data, response) = try await URLSession.shared.data(for: url)
         
-        guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+        guard let httpResponse = response as? HTTPURLResponse else {
             throw NetworkError.invalidData
+        }
+        
+        if !(200...299).contains(httpResponse.statusCode) {
+            // Attempt to decode the error response
+            if let apiError = try? JSONDecoder().decode(APIErrorResponse.self, from: data) {
+                print("test2")
+                print(apiError)
+                throw NetworkError.apiError(apiError.message)
+            } else {
+                print("test3")
+                throw NetworkError.invalidData
+            }
         }
         
         return data
     }
+
 }
