@@ -4,12 +4,7 @@
 //
 //  Created by Eduardo Regis Vieira on 11/12/24.
 //
-//
-//  TravelViewController.swift
-//  DriveNow
-//
-//  Created by Eduardo Regis Vieira on 12/12/24.
-//
+
 
 import UIKit
 
