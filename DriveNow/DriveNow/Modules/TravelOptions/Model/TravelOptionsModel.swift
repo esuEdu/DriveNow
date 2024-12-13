@@ -7,17 +7,25 @@
 
 import Foundation
 
-enum TravelModel {
+enum TravelOptionsModel {
     
     struct Request: Codable {
         let customerId: String
         let origin: String
         let destination: String
-        
+        let distance: Int
+        let duration: Int
+        let driver: Driver
+        let value: Double
+
         enum CodingKeys: String, CodingKey {
             case customerId = "customer_id"
             case origin
             case destination
+            case distance
+            case duration
+            case driver
+            case value
         }
     }
     
@@ -32,14 +40,21 @@ enum TravelModel {
         let duration: Int
         let options: [TravelOption]
         let routeResponse: AnyValue
+
     }
     
-    struct TravelOrigins {
-        let origins: [String]
+    struct DriverId {
+        let driverId: Int
     }
     
-    struct TravelDestinations {
-        let destinations: [String]
+    struct Router {
+        let origin: Coordinates
+        let destination: Coordinates
+        let routerData: Data
+    }
+    
+    struct TravelOptions {
+        let travels: [TravelOption]
     }
     
     struct Error {

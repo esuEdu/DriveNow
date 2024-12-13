@@ -35,11 +35,8 @@ class APIClient: APIClientProtocol {
         if !(200...299).contains(httpResponse.statusCode) {
             // Attempt to decode the error response
             if let apiError = try? JSONDecoder().decode(APIErrorResponse.self, from: data) {
-                print("test2")
-                print(apiError)
                 throw NetworkError.apiError(apiError.message)
             } else {
-                print("test3")
                 throw NetworkError.invalidData
             }
         }
