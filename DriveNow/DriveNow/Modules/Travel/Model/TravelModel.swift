@@ -5,6 +5,8 @@
 //  Created by Eduardo Regis Vieira on 11/12/24.
 //
 
+import Foundation
+
 enum TravelModel {
     
     struct Request: Codable {
@@ -30,7 +32,14 @@ enum TravelModel {
         let duration: Int
         let options: [TravelOption]
         let routeResponse: AnyValue
-
+    }
+    
+    struct TravelOrigins {
+        let origins: [String]
+    }
+    
+    struct TravelDestinations {
+        let destinations: [String]
     }
     
     struct Error {

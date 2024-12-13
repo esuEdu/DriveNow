@@ -9,11 +9,12 @@ import Foundation
 
 protocol TravelPresentaionLogic {
     func presentTravel(response: TravelModel.Response)
+    func presentOrigins(response: TravelModel.TravelOrigins)
+    func presentDestinations(response: TravelModel.TravelDestinations)
     func presentError(error: TravelModel.Error)
 }
 
 class TravelPresenter: TravelPresentaionLogic {
-    
     
     weak var viewController: TravelDisplayLogic?
     
@@ -37,4 +38,14 @@ class TravelPresenter: TravelPresentaionLogic {
         viewController?.displayError(error: error)
     }
     
+    func presentOrigins(response: TravelModel.TravelOrigins) {
+        viewController?.displayAvailableOrigins(response.origins)
+    }
+    
+    func presentDestinations(response: TravelModel.TravelDestinations) {
+        viewController?.displayAvailableDestinations(response.destinations)
+    }
+    
+    
 }
+

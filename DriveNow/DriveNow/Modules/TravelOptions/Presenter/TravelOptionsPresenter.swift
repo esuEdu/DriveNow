@@ -8,33 +8,32 @@
 import Foundation
 
 protocol TravelOptionsPresentaionLogic {
-    func presentTravel(response: TravelOptionsModel.Response)
+    func presentTravelOptions(travelOptions: TravelOptionsModel.TravelOptions)
+    func presentTravelRoute(travelRoute: TravelOptionsModel.Router)
+    func presentRideConfirm()
     func presentError(error: TravelOptionsModel.Error)
 }
 
 class TravelOptionsPresenter: TravelOptionsPresentaionLogic {
+
     
     
     weak var viewController: TravelOptionsDisplayLogic?
     
-    func presentTravel(response: TravelOptionsModel.Response) {
-        
-        let viewModel = TravelOptionsModel.ViewModel(
-            origin: response.data.origin,
-            destination: response.data.destination,
-            distance: response.data.distance,
-            duration: response.data.duration,
-            options: response.data.options,
-            routeResponse: response.data.routeResponse
-        )
-        
-        viewController?.displayTravelEstimate(viewModel: viewModel)
-        
+    func presentTravelOptions(travelOptions: TravelOptionsModel.TravelOptions) {
+        viewController?.displayTravelOptions(rides: travelOptions)
+    }
+    
+    func presentTravelRoute(travelRoute: TravelOptionsModel.Router) {
+        viewController?.displayTravelRoute(travelRouter: travelRoute)
     }
     
     func presentError(error: TravelOptionsModel.Error) {
-        
         viewController?.displayError(error: error)
+    }
+    
+    func presentRideConfirm() {
+        viewController?.goToHistory()
     }
     
 }
