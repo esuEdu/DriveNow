@@ -5,6 +5,12 @@
 //  Created by Eduardo Regis Vieira on 12/12/24.
 //
 
+//
+//  TravelHistoryViewController.swift
+//  DriveNow
+//
+//  Created by Eduardo Regis Vieira on 12/12/24.
+//
 
 import Foundation
 import UIKit
@@ -20,143 +26,205 @@ class TravelHistoryViewController: UIViewController, TravelHistoryDisplayLogic {
     var interactor: TravelHistoryBusinessLogic?
     var router: AppRouter?
     
-    // Componentes de UI
+    // UI Components
     private let userIdTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Informe o ID do usuário"
+        textField.placeholder = "Enter User ID"
         textField.borderStyle = .roundedRect
         textField.keyboardType = .numberPad
+        textField.backgroundColor = .white
         return textField
     }()
     
-    private let driverPickerView = UIPickerView()
-    
-    // Dicionário de motoristas [ID: Nome]
-    private var drivers: [Int:String] = [:] {
-        didSet {
-            let sortedKeys = drivers.keys.sorted()
-            self.sortedDriverKeys = [nil] + sortedKeys.map { Optional($0) }
-            driverPickerView.reloadAllComponents()
-        }
-    }
-    
-    // Array de chaves ordenadas + nil representando "Todos"
-    private var sortedDriverKeys: [Int?] = [nil]
-    
-    private let applyFilterButton: UIButton = {
+    private let driverButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Aplicar Filtro", for: .normal)
-        button.addTarget(nil, action: #selector(applyFilterTapped), for: .touchUpInside)
+        button.setTitle("Select Driver", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .darkGray
+        button.layer.cornerRadius = 8
+        button.addTarget(nil, action: #selector(driverButtonTapped), for: .touchUpInside)
         return button
     }()
     
-    // Adicionando a UITableView para exibir os resultados filtrados
+    private let applyFilterButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Apply Filter", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .black
+        button.layer.cornerRadius = 8
+        button.addTarget(nil, action: #selector(applyFilterTapped), for: .touchUpInside)
+        button.isEnabled = true
+        return button
+    }()
+    
+    private let activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.color = .white
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
+    
     private let tableView: UITableView = {
         let table = UITableView()
         table.register(RideTableViewCell.self, forCellReuseIdentifier: RideTableViewCell.identifier)
+        table.isHidden = true // Initially hidden
+        table.backgroundColor = .systemBackground
         return table
     }()
     
-    // Data source para armazenar os resultados filtrados
+    // Data Sources
+    private var drivers: [Int:String] = [:] {
+        didSet {
+            self.sortedDriverKeys = [nil] + drivers.keys.sorted().map { Optional($0) }
+        }
+    }
+    
+    private var sortedDriverKeys: [Int?] = [nil]
+    private var selectedDriver: Int?
     private var filteredRides: [Ride] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .systemBackground
-        
-        // Configurar PickerView
-        driverPickerView.dataSource = self
-        driverPickerView.delegate = self
-        
-        // Configurar TableView
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.isHidden = true // Esconder inicialmente
-        
-        // Adicionar subviews
+        setupUI()
+        fetchAvailableDrivers()
+    }
+    
+    private func setupUI() {
+        // Add subviews
         view.addSubview(userIdTextField)
-        view.addSubview(driverPickerView)
+        view.addSubview(driverButton)
         view.addSubview(applyFilterButton)
+        view.addSubview(activityIndicator)
         view.addSubview(tableView)
         
-        // Exemplo simples de posicionamento com AutoLayout
+        // Set delegates
+        tableView.dataSource = self
+        tableView.delegate = self
+        
+        // Disable autoresizing mask
         userIdTextField.translatesAutoresizingMaskIntoConstraints = false
-        driverPickerView.translatesAutoresizingMaskIntoConstraints = false
+        driverButton.translatesAutoresizingMaskIntoConstraints = false
         applyFilterButton.translatesAutoresizingMaskIntoConstraints = false
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
+        // Apply constraints
         NSLayoutConstraint.activate([
             userIdTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             userIdTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             userIdTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            userIdTextField.heightAnchor.constraint(equalToConstant: 44),
             
-            driverPickerView.topAnchor.constraint(equalTo: userIdTextField.bottomAnchor, constant: 20),
-            driverPickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            driverPickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            driverPickerView.heightAnchor.constraint(equalToConstant: 150),
+            driverButton.topAnchor.constraint(equalTo: userIdTextField.bottomAnchor, constant: 20),
+            driverButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            driverButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            driverButton.heightAnchor.constraint(equalToConstant: 50),
             
-            applyFilterButton.topAnchor.constraint(equalTo: driverPickerView.bottomAnchor, constant: 20),
-            applyFilterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            applyFilterButton.topAnchor.constraint(equalTo: driverButton.bottomAnchor, constant: 40),
+            applyFilterButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
+            applyFilterButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
+            applyFilterButton.heightAnchor.constraint(equalToConstant: 50),
             
             tableView.topAnchor.constraint(equalTo: applyFilterButton.bottomAnchor, constant: 20),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
         
+        // Style table view
+        tableView.layer.cornerRadius = 8
+        tableView.layer.borderWidth = 1
+        tableView.layer.borderColor = UIColor.lightGray.cgColor
+    }
+    
+    private func fetchAvailableDrivers() {
+        activityIndicator.startAnimating()
         interactor?.fetchAvailableDrivers()
     }
     
+    @objc private func driverButtonTapped() {
+        let alert = UIAlertController(title: "Select Driver", message: nil, preferredStyle: .actionSheet)
+        
+        // Add "All Drivers" option
+        alert.addAction(UIAlertAction(title: "All Drivers", style: .default, handler: { _ in
+            self.selectedDriver = nil
+            self.driverButton.setTitle("All Drivers", for: .normal)
+        }))
+        
+        // Add actions for each driver
+        drivers.forEach { (id, name) in
+            alert.addAction(UIAlertAction(title: name, style: .default, handler: { _ in
+                self.selectedDriver = id
+                self.driverButton.setTitle(name, for: .normal)
+            }))
+        }
+        
+        // Cancel action
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        // For iPad support
+        if let popoverController = alert.popoverPresentationController {
+            popoverController.sourceView = driverButton
+            popoverController.sourceRect = driverButton.bounds
+        }
+        
+        present(alert, animated: true)
+    }
+    
     @objc private func applyFilterTapped() {
-        let userIdText = userIdTextField.text ?? ""
-        let selectedRow = driverPickerView.selectedRow(inComponent: 0)
+        guard let userId = userIdTextField.text, !userId.isEmpty else {
+            displayError(TravelHistoryModel.Error(message: "Please enter a user ID."))
+            return
+        }
         
-        // Obtém a chave do motorista selecionado (se nil, significa "Todos")
-        let selectedDriverKey = sortedDriverKeys[selectedRow]
-        
-        // Cria um request para filtrar
-        let request = TravelHistoryModel.FilterRequest (
-            userId: userIdText,
-            driverId: selectedDriverKey // passa o ID ou nil
+        let request = TravelHistoryModel.FilterRequest(
+            userId: userId,
+            driverId: selectedDriver
         )
         
-        interactor?.applyFilter(request: request)
+        applyFilterButton.isEnabled = false
+        activityIndicator.startAnimating()
+        tableView.isHidden = true
+        
+        Task {
+            interactor?.applyFilter(request: request)
+            DispatchQueue.main.async {
+                self.applyFilterButton.isEnabled = true
+                self.activityIndicator.stopAnimating()
+            }
+        }
     }
     
     // MARK: - Display Logic
     
-    func displayAvailableDrivers(_ drivers: [Int:String]) {
-        self.drivers = drivers
+    func displayAvailableDrivers(_ drivers: [Int : String]) {
+        DispatchQueue.main.async {
+            self.drivers = drivers
+            // Optionally set default selection
+            self.driverButton.setTitle("All Drivers", for: .normal)
+        }
     }
     
     func displayFilteredResults(_ viewModel: TravelHistoryModel.ViewModel) {
-        self.filteredRides = viewModel.results.rides
-        tableView.isHidden = false
-        tableView.reloadData()
+        DispatchQueue.main.async {
+            self.filteredRides = viewModel.results.rides
+            self.tableView.isHidden = false
+            self.tableView.reloadData()
+        }
     }
     
     func displayError(_ error: TravelHistoryModel.Error) {
-        // Mostra alerta de erro
-        let alert = UIAlertController(title: "Erro", message: error.message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
-    }
-}
-
-// MARK: - UIPickerViewDataSource, UIPickerViewDelegate
-extension TravelHistoryViewController: UIPickerViewDataSource, UIPickerViewDelegate {
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return sortedDriverKeys.count
-    }
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        if let key = sortedDriverKeys[row] {
-            return drivers[key]
-        } else {
-            return "Todos"
+        DispatchQueue.main.async {
+            self.applyFilterButton.isEnabled = true
+            self.activityIndicator.stopAnimating()
+            let alert = UIAlertController(title: "Error", message: error.message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            self.present(alert, animated: true)
         }
     }
 }
@@ -164,17 +232,17 @@ extension TravelHistoryViewController: UIPickerViewDataSource, UIPickerViewDeleg
 // MARK: - UITableViewDataSource, UITableViewDelegate
 extension TravelHistoryViewController: UITableViewDataSource, UITableViewDelegate {
     
-    // Define o número de seções
+    // Define the number of sections
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    // Define o número de linhas na seção
+    // Define the number of rows in the section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return filteredRides.count
     }
     
-    // Configura cada célula
+    // Configure each cell
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         guard let cell = tableView.dequeueReusableCell(withIdentifier: RideTableViewCell.identifier, for: indexPath) as? RideTableViewCell else {
@@ -187,12 +255,12 @@ extension TravelHistoryViewController: UITableViewDataSource, UITableViewDelegat
         return cell
     }
     
-    // (Opcional) Lida com a seleção de uma célula
+    // Handle cell selection (optional)
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // Desseleciona a célula
+        // Deselect the cell
         tableView.deselectRow(at: indexPath, animated: true)
         
-        // Implementar ação ao selecionar uma ride, se necessário
+        // Implement action on selecting a ride if necessary
     }
 }
 
@@ -210,15 +278,27 @@ class RideTableViewCell: UITableViewCell {
     private let driverLabel = UILabel()
     private let valueLabel = UILabel()
     
-    // Inicialização
+    // Stack View for layout
+    private let stackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 5
+        stack.alignment = .leading
+        return stack
+    }()
+    
+    // Initialization
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        // Configurar UI
-        let stackView = UIStackView(arrangedSubviews: [dateLabel, originLabel, destinationLabel, distanceLabel, durationLabel, driverLabel, valueLabel])
-        stackView.axis = .vertical
-        stackView.spacing = 5
-        stackView.alignment = .leading
+        // Configure UI
+        stackView.addArrangedSubview(dateLabel)
+        stackView.addArrangedSubview(originLabel)
+        stackView.addArrangedSubview(destinationLabel)
+        stackView.addArrangedSubview(distanceLabel)
+        stackView.addArrangedSubview(durationLabel)
+        stackView.addArrangedSubview(driverLabel)
+        stackView.addArrangedSubview(valueLabel)
         
         contentView.addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -231,7 +311,7 @@ class RideTableViewCell: UITableViewCell {
             stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
         ])
         
-        // Configurar fontes e cores, se necessário
+        // Configure fonts and colors
         dateLabel.font = UIFont.boldSystemFont(ofSize: 16)
         originLabel.font = UIFont.systemFont(ofSize: 14)
         destinationLabel.font = UIFont.systemFont(ofSize: 14)
@@ -246,14 +326,14 @@ class RideTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // Configurar a célula com os dados de uma ride
+    // Configure the cell with ride data
     func configure(with ride: Ride) {
-        dateLabel.text = "Data: \(ride.date)"
-        originLabel.text = "Origem: \(ride.origin)"
-        destinationLabel.text = "Destino: \(ride.destination)"
-        distanceLabel.text = String(format: "Distância: %.2f km", ride.distance)
-        durationLabel.text = "Duração: \(ride.duration)"
-        driverLabel.text = "Motorista: \(ride.driver.name)"
-        valueLabel.text = String(format: "Valor: R$ %.2f", ride.value)
+        dateLabel.text = "Date: \(ride.date)"
+        originLabel.text = "Origin: \(ride.origin)"
+        destinationLabel.text = "Destination: \(ride.destination)"
+        distanceLabel.text = String(format: "Distance: %.2f km", ride.distance)
+        durationLabel.text = "Duration: \(ride.duration)"
+        driverLabel.text = "Driver: \(ride.driver.name)"
+        valueLabel.text = String(format: "Value: R$ %.2f", ride.value)
     }
 }
